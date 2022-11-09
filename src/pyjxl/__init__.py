@@ -1,9 +1,8 @@
 """
-PyJXL
+pyJXL
 
 A decoder of JPEG XL images.
 """
 
-# import all public functions. This defines the API. This should be changed from
-# a wildcard import once there is some actual code.
-from pyjxl import *
+# Import all public functions. This defines whit is the public API.
+from pyjxl import RawImage, decode, save, load_and_decode, load_decode_and_save
