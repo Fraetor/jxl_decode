@@ -1,4 +1,4 @@
-# PyJXL
+# pyJXL
 
 A python JPEG XL decoder. It is currently *very* incomplete.
 
@@ -15,7 +15,7 @@ output, if I don't write one myself.
 - Recent [Python 3](https://www.python.org/) (developed with 3.11, but may work with some older versions)
 - [NumPy](https://numpy.org/) Can be installed with `pip install numpy`.
 
-### Development requirements
+### Development Requirements
 
 - [PyTest](https://docs.pytest.org/)
 
