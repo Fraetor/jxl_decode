@@ -11,7 +11,7 @@ from sys import argv
 
 class RawImage:
     """
-    Raw image data stored in a NumPy array per channel.
+    Raw image data stored in a List of Lists per channel.
 
     This could well be a dictionary, but I like it having defaults.
     """
