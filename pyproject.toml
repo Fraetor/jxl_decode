@@ -1,0 +1,28 @@
+[project]
+name = "pyJXL"
+version = "0.0.1"
+authors = [
+  { name="James Frost", email="git@frost.cx" },
+]
+description = "A python JPEG XL decoder."
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = ["JPEG XL", "jxl"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 2 - Pre-Alpha",
+    "Topic :: Multimedia :: Graphics"
+]
+# dependencies = []
+# optional-dependencies = []
+
+[project.urls]
+"Homepage" = "https://github.com/Fraetor/pyjxl"
+"Bug Tracker" = "https://github.com/Fraetor/pyjxl/issues"
+
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"

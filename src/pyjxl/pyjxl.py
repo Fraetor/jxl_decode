@@ -63,12 +63,13 @@ def print_help(exit_code=0):
 Decodes the INPUT_FILE, optionally saving to the OUTPUT_FILE.
 
 -h, --help    display this help and exit
-pyJXL is intended to decode PPM, JPEG, and JPEG XL files. It outputs to a PNG
-file.""")
+
+pyJXL is intended to decode PPM, JPEG, and JPEG XL files, outputting a PNG.""")
     sys.exit(exit_code)
 
 
-if __name__ == "__main__":
+def main():
+    """Command line handling."""
     if "-h" in sys.argv or "--help" in sys.argv or not 1 < len(sys.argv) <= 3:
         print_help(0)
     file_in = Path(sys.argv[1])
