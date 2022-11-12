@@ -55,4 +55,4 @@ Show your appreciation to those who have contributed to the project. -->
 
 ## Licence
 
-This software is available under the [MIT Licence](LICENCE).
+This software is available under the [MIT Licence](LICENCE.md).
