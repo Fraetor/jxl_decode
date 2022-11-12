@@ -28,9 +28,9 @@ python3 pyjxl.py input_file.jxl [output_file.png]
 ## Roadmap/To Do
 
 - [ ] Decide on internal representation of image data (NumPy array?)
-- [ ] Define external interfaces by decoding PPM image.
-- [ ] Decode JPEG images.
+- [x] Define external interfaces by decoding PPM image.
 - [ ] PNG output of decoded images.
+- [ ] Decode JPEG images.
 - [ ] Start on JPEG XL support.
 
 <!-- ## Contributing
