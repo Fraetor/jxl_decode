@@ -21,7 +21,74 @@ def decode_codestream(codestream: bytearray) -> RawImage:
     Decodes the actual codestream.
     JXL codestream specification: http://www-internal/2022/18181-1
     """
-    print("Codestream:", codestream.hex(" ", 4))
+
+    def get_bits(bits: int, position: int, length: int = 1) -> int:
+        bitmask = 2 ** length - 1
+        return (bits >> position) & bitmask
+
+    # Convert codestream to int so bitwise operators work on it.
+    codestream = int.from_bytes(codestream, "little")
+    # Bit pointer
+    shift = 0
+
+    # Skip signature
+    shift += 16
+
+    # SizeHeader
+    div8 = get_bits(codestream, shift)
+    shift += 1
+    if div8:
+        height = 8 * (1 + get_bits(codestream, shift, 5))
+        shift += 5
+    else:
+        distribution = get_bits(codestream, shift, 2)
+        shift += 2
+        match distribution:
+            case 0:
+                height = 1 + get_bits(codestream, shift, 9)
+                shift += 9
+            case 1:
+                height = 1 + get_bits(codestream, shift, 13)
+                shift += 13
+            case 2:
+                height = 1 + get_bits(codestream, shift, 18)
+                shift += 18
+            case 3:
+                height = 1 + get_bits(codestream, shift, 30)
+                shift += 30
+    ratio = get_bits(codestream, shift, 3)
+    shift += 3
+    if div8 and not ratio:
+        width = 8 * (1 + get_bits(codestream, shift, 5))
+        shift += 5
+    elif not ratio:
+        distribution = get_bits(codestream, shift, 2)
+        shift += 2
+        match distribution:
+            case 0:
+                width = 1 + get_bits(codestream, shift, 9)
+                shift += 9
+            case 1:
+                width = 1 + get_bits(codestream, shift, 13)
+                shift += 13
+            case 2:
+                width = 1 + get_bits(codestream, shift, 18)
+                shift += 18
+            case 3:
+                width = 1 + get_bits(codestream, shift, 30)
+                shift += 30
+    else:
+        match ratio:
+            case 1: width = height
+            case 2: width = (height * 12) // 10
+            case 3: width = (height * 4) // 3
+            case 4: width = (height * 3) // 2
+            case 5: width = (height * 16) // 9
+            case 6: width = (height * 5) // 4
+            case 7: width = (height * 2) // 1
+    print(f"Dimensions: {width}x{height}")
+
+    # ImageMetadata
     raise NotImplementedError
 
 
