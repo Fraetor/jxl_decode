@@ -9,7 +9,7 @@ def decode_jxl(bitstream: bytearray) -> RawImage:
     """
     Decodes a JPEG XL image.
     """
-    if bitstream[2:] == bytes.fromhex("FF0A"):
+    if bitstream[:2] == bytes.fromhex("FF0A"):
         image = decode_codestream(bitstream)
     else:
         image = decode_container(bitstream)
@@ -21,7 +21,7 @@ def decode_codestream(codestream: bytearray) -> RawImage:
     Decodes the actual codestream.
     JXL codestream specification: http://www-internal/2022/18181-1
     """
-    print(codestream[128:].hex(" ", 4))
+    print("Codestream:", codestream.hex(" ", 4))
     raise NotImplementedError
 
 
@@ -32,13 +32,14 @@ def decode_container(bitstream: bytearray) -> RawImage:
     """
     def parse_box(bitstream: bytearray, box_start: int) -> dict:
         LBox = int.from_bytes(bitstream[box_start:box_start+4])
+        XLBox = None
         if 1 < LBox <= 8:
             raise ValueError(f"Invalid LBox at byte {box_start}.")
         if LBox == 1:
             XLBox = int.from_bytes(bitstream[box_start+8:box_start+16])
             if XLBox <= 16:
                 raise ValueError(f"Invalid XLBox at byte {box_start}.")
-        if XLBox in locals():
+        if XLBox:
             header_length = 16
             box_length = XLBox
         else:
