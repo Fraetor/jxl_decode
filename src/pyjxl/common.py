@@ -29,3 +29,19 @@ class RawImage:
             f"Channel 1: {self.ch1},\n" + \
             f"Channel 2: {self.ch2} )"
         return pretty_string
+
+
+class Bitstream:
+    """
+    A stream of bits with methods for easy handling.
+    """
+
+    def __init__(self, bitstream: bytearray) -> None:
+        self.bitstream: int = int.from_bytes(bitstream, "little")
+        self.shift: int = 0
+
+    def get_bits(self, length: int = 1) -> int:
+        bitmask = 2 ** length - 1
+        bits = (self.bitstream >> self.shift) & bitmask
+        self.shift += length
+        return bits

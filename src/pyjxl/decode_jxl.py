@@ -2,7 +2,7 @@
 JPEG XL Decoder
 """
 
-from pyjxl.common import RawImage
+from pyjxl.common import RawImage, Bitstream
 
 
 def decode_jxl(bitstream: bytearray) -> RawImage:
@@ -16,67 +16,47 @@ def decode_jxl(bitstream: bytearray) -> RawImage:
     return image
 
 
-def decode_codestream(codestream: bytearray) -> RawImage:
+def decode_codestream(bitstream: bytearray) -> RawImage:
     """
     Decodes the actual codestream.
     JXL codestream specification: http://www-internal/2022/18181-1
     """
 
-    def get_bits(bits: int, position: int, length: int = 1) -> int:
-        bitmask = 2 ** length - 1
-        return (bits >> position) & bitmask
-
-    # Convert codestream to int so bitwise operators work on it.
-    codestream = int.from_bytes(codestream, "little")
-    # Bit pointer
-    shift = 0
+    # Convert codestream to int within an object to get some handy methods.
+    codestream = Bitstream(bitstream)
 
     # Skip signature
-    shift += 16
+    codestream.shift += 16
 
     # SizeHeader
-    div8 = get_bits(codestream, shift)
-    shift += 1
+    div8 = codestream.get_bits(1)
     if div8:
-        height = 8 * (1 + get_bits(codestream, shift, 5))
-        shift += 5
+        height = 8 * (1 + codestream.get_bits(5))
     else:
-        distribution = get_bits(codestream, shift, 2)
-        shift += 2
+        distribution = codestream.get_bits(2)
         match distribution:
             case 0:
-                height = 1 + get_bits(codestream, shift, 9)
-                shift += 9
+                height = 1 + codestream.get_bits(9)
             case 1:
-                height = 1 + get_bits(codestream, shift, 13)
-                shift += 13
+                height = 1 + codestream.get_bits(13)
             case 2:
-                height = 1 + get_bits(codestream, shift, 18)
-                shift += 18
+                height = 1 + codestream.get_bits(18)
             case 3:
-                height = 1 + get_bits(codestream, shift, 30)
-                shift += 30
-    ratio = get_bits(codestream, shift, 3)
-    shift += 3
+                height = 1 + codestream.get_bits(30)
+    ratio = codestream.get_bits(3)
     if div8 and not ratio:
-        width = 8 * (1 + get_bits(codestream, shift, 5))
-        shift += 5
+        width = 8 * (1 + codestream.get_bits(5))
     elif not ratio:
-        distribution = get_bits(codestream, shift, 2)
-        shift += 2
+        distribution = codestream.get_bits(2)
         match distribution:
             case 0:
-                width = 1 + get_bits(codestream, shift, 9)
-                shift += 9
+                width = 1 + codestream.get_bits(9)
             case 1:
-                width = 1 + get_bits(codestream, shift, 13)
-                shift += 13
+                width = 1 + codestream.get_bits(13)
             case 2:
-                width = 1 + get_bits(codestream, shift, 18)
-                shift += 18
+                width = 1 + codestream.get_bits(18)
             case 3:
-                width = 1 + get_bits(codestream, shift, 30)
-                shift += 30
+                width = 1 + codestream.get_bits(30)
     else:
         match ratio:
             case 1: width = height
@@ -154,5 +134,4 @@ def decode_container(bitstream: bytearray) -> RawImage:
         partial_codestream.sort(key=lambda i: i[0])
         codestream = b''.join([i[1] for i in partial_codestream])
 
-    image = decode_codestream(codestream)
-    return image
+    return decode_codestream(codestream)
