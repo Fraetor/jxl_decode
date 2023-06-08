@@ -27,6 +27,7 @@ python3 pyjxl.py input_file.jxl [output_file.png]
 
 ## Roadmap/To Do
 
+- [ ] Add tests (and possibly some more useful methods) to Bitstream class.
 - [ ] Decide on internal representation of image data (NumPy array?)
 - [x] Define external interfaces by decoding PPM image.
 - [ ] PNG output of decoded images.
