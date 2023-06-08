@@ -4,13 +4,20 @@ A pure python JPEG XL decoder. It is currently *very* incomplete.
 
 ## Installation
 
+jxl_decode can be installed from [PyPI](https://pypi.org/project/jxl-decode/).
+
+```sh
+pip install jxl_decode
+```
+
 I am aiming to make this decoder as portable as possible. As such it will
 ideally have minimal dependencies outside of the standard library. I may use a
 dependency for PNG output, if I don't write one myself.
 
 ### Requirements
 
-- Recent [Python 3](https://www.python.org/) (developed with 3.11, but may work with some older versions)
+- Recent [Python 3](https://www.python.org/) (developed with 3.11, but may work
+  with some older versions)
 
 ### Development Requirements
 
