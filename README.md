@@ -1,6 +1,6 @@
-# pyJXL
+# jxl_decode
 
-A python JPEG XL decoder. It is currently *very* incomplete.
+A pure python JPEG XL decoder. It is currently *very* incomplete.
 
 ## Installation
 
@@ -22,7 +22,7 @@ We are a long way away from it, but this is how I intend the decoder to work
 from the command line:
 
 ```sh
-python3 pyjxl.py input_file.jxl [output_file.png]
+jxl_decode input_file.jxl [output_file.png]
 ```
 
 ## Roadmap/To Do

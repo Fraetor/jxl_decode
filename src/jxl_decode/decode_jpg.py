@@ -2,7 +2,7 @@
 JPEG JFIF Decoder
 """
 
-from pyjxl.common import RawImage
+from jxl_decode.common import RawImage
 
 
 def decode_jpg(bitstream: bytearray) -> RawImage:

@@ -1,10 +1,10 @@
 [project]
-name = "pyJXL"
-version = "0.0.3"
+name = "jxl_decode"
+version = "0.0.1"
 authors = [
   { name="James Frost", email="git@frost.cx" },
 ]
-description = "A python JPEG XL decoder."
+description = "A pure python JPEG XL decoder."
 readme = "README.md"
 requires-python = ">=3.10"
 keywords = ["JPEG XL", "jxl"]
@@ -19,9 +19,8 @@ classifiers = [
 # optional-dependencies = []
 
 [project.urls]
-"Homepage" = "https://github.com/Fraetor/pyjxl"
-"Bug Tracker" = "https://github.com/Fraetor/pyjxl/issues"
-
+"Homepage" = "https://github.com/Fraetor/jxl_decode"
+"Bug Tracker" = "https://github.com/Fraetor/jxl_decode/issues"
 
 [build-system]
 requires = ["setuptools>=61.0"]

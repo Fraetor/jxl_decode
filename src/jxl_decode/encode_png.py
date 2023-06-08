@@ -2,7 +2,7 @@
 PNG Encoder
 """
 
-from pyjxl.common import RawImage
+from jxl_decode.common import RawImage
 
 
 def encode_png(image: RawImage) -> bytearray:

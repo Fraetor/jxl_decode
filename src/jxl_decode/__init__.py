@@ -5,4 +5,4 @@ A decoder of JPEG XL images.
 """
 
 # Import all public functions. This defines the public API.
-from pyjxl.pyjxl import load, decode, save
+from jxl_decode.main import load, decode, save

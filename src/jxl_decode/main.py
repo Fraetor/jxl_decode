@@ -7,11 +7,11 @@ This module implements the core code of pyJXL.
 from pathlib import Path
 import sys
 
-from pyjxl.common import RawImage
-from pyjxl.decode_ppm import decode_ppm
-from pyjxl.decode_jpg import decode_jpg
-from pyjxl.decode_jxl import decode_jxl
-from pyjxl.encode_png import encode_png
+from jxl_decode.common import RawImage
+from jxl_decode.decode_ppm import decode_ppm
+from jxl_decode.decode_jpg import decode_jpg
+from jxl_decode.decode_jxl import decode_jxl
+from jxl_decode.encode_png import encode_png
 
 
 def load(file_path: Path) -> bytearray:

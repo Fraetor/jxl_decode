@@ -2,7 +2,7 @@
 PPM Decoder
 """
 
-from pyjxl.common import RawImage
+from jxl_decode.common import RawImage
 
 
 def decode_ppm(bitstream: bytearray) -> RawImage:

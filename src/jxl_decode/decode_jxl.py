@@ -2,7 +2,7 @@
 JPEG XL Decoder
 """
 
-from pyjxl.common import RawImage, Bitstream
+from jxl_decode.common import RawImage, Bitstream
 
 
 def decode_jxl(bitstream: bytearray) -> RawImage:
