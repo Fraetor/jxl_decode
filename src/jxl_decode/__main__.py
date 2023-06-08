@@ -1,5 +1,5 @@
 """Command line entry point."""
 import sys
-from jxl_decode.main import main
+from jxl_decode.core import cli_entrypoint
 
-sys.exit(main())
+sys.exit(cli_entrypoint())

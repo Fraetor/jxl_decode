@@ -5,7 +5,7 @@ JPEG XL Decoder
 from jxl_decode.common import RawImage, Bitstream
 
 
-def decode_jxl(bitstream: bytearray) -> RawImage:
+def decode_jxl(bitstream: bytes) -> RawImage:
     """
     Decodes a JPEG XL image.
     """
@@ -16,7 +16,7 @@ def decode_jxl(bitstream: bytearray) -> RawImage:
     return image
 
 
-def decode_codestream(bitstream: bytearray) -> RawImage:
+def decode_codestream(bitstream: bytes) -> RawImage:
     """
     Decodes the actual codestream.
     JXL codestream specification: http://www-internal/2022/18181-1
@@ -59,31 +59,39 @@ def decode_codestream(bitstream: bytearray) -> RawImage:
                 width = 1 + codestream.get_bits(30)
     else:
         match ratio:
-            case 1: width = height
-            case 2: width = (height * 12) // 10
-            case 3: width = (height * 4) // 3
-            case 4: width = (height * 3) // 2
-            case 5: width = (height * 16) // 9
-            case 6: width = (height * 5) // 4
-            case 7: width = (height * 2) // 1
+            case 1:
+                width = height
+            case 2:
+                width = (height * 12) // 10
+            case 3:
+                width = (height * 4) // 3
+            case 4:
+                width = (height * 3) // 2
+            case 5:
+                width = (height * 16) // 9
+            case 6:
+                width = (height * 5) // 4
+            case 7:
+                width = (height * 2) // 1
     print(f"Dimensions: {width}x{height}")
 
     # ImageMetadata
     raise NotImplementedError
 
 
-def decode_container(bitstream: bytearray) -> RawImage:
+def decode_container(bitstream: bytes) -> RawImage:
     """
     Parses the ISOBMFF container, extracts the codestream, and decodes it.
     JXL container specification: http://www-internal/2022/18181-2
     """
-    def parse_box(bitstream: bytearray, box_start: int) -> dict:
-        LBox = int.from_bytes(bitstream[box_start:box_start+4])
+
+    def parse_box(bitstream: bytes, box_start: int) -> dict:
+        LBox = int.from_bytes(bitstream[box_start : box_start + 4])
         XLBox = None
         if 1 < LBox <= 8:
             raise ValueError(f"Invalid LBox at byte {box_start}.")
         if LBox == 1:
-            XLBox = int.from_bytes(bitstream[box_start+8:box_start+16])
+            XLBox = int.from_bytes(bitstream[box_start + 8 : box_start + 16])
             if XLBox <= 16:
                 raise ValueError(f"Invalid XLBox at byte {box_start}.")
         if XLBox:
@@ -97,8 +105,8 @@ def decode_container(bitstream: bytearray) -> RawImage:
                 box_length = LBox
         return {
             "length": box_length,
-            "type": bitstream[box_start+4:box_start+8],
-            "data": bitstream[box_start+header_length:box_start+box_length]
+            "type": bitstream[box_start + 4 : box_start + 8],
+            "data": bitstream[box_start + header_length : box_start + box_length],
         }
 
     # Reject files missing required boxes. These two boxes are required to be at
@@ -107,7 +115,9 @@ def decode_container(bitstream: bytearray) -> RawImage:
     if bitstream[:12] != bytes.fromhex("0000000C 4A584C20 0D0A870A"):
         raise ValueError("Invalid signature box.")
     # File Type box.
-    if bitstream[12:32] != bytes.fromhex("00000014 66747970 6A786C20 00000000 6A786C20"):
+    if bitstream[12:32] != bytes.fromhex(
+        "00000014 66747970 6A786C20 00000000 6A786C20"
+    ):
         raise ValueError("Invalid file type box.")
 
     partial_codestream = []
@@ -116,22 +126,22 @@ def decode_container(bitstream: bytearray) -> RawImage:
         box = parse_box(bitstream, container_pointer)
         container_pointer += box["length"]
         match box["type"]:
-            case b'jxll':
+            case b"jxll":
                 level = int.from_bytes(box["data"])
                 if level != 5 or level != 10:
                     raise ValueError("Unknown level")
-            case b'jxlc':
+            case b"jxlc":
                 codestream = box["data"]
-            case b'jxlp':
+            case b"jxlp":
                 index = int.from_bytes(box["data"][:4])
                 partial_codestream.append([index, box["data"][4:]])
-            case b'jxli':
+            case b"jxli":
                 # Frame Index box. It could be useful to parse?
                 # http://www-internal/2022/18181-2#toc17
                 pass
 
     if partial_codestream:
         partial_codestream.sort(key=lambda i: i[0])
-        codestream = b''.join([i[1] for i in partial_codestream])
+        codestream = b"".join([i[1] for i in partial_codestream])
 
     return decode_codestream(codestream)
