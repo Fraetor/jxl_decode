@@ -14,7 +14,6 @@ should be uncommon however, and really only effects CMYK, or gigapixel images.
 
 from pathlib import Path
 import argparse
-import logging
 import sys
 
 
@@ -105,22 +104,13 @@ def main() -> int:
     parser.add_argument(
         "-v",
         "--verbose",
-        action="count",
-        default=0,
+        action="store_true",
         help="explain what is happening.",
     )
     parser.add_argument(
         "file", help="JXL file to strip, will be overwritten", type=Path
     )
     args = parser.parse_args()
-
-    # Set logging verbosity
-    if args.verbose >= 2:
-        logging.basicConfig(level=logging.DEBUG)
-    elif args.verbose >= 1:
-        logging.basicConfig(level=logging.INFO)
-    else:
-        logging.basicConfig(level=logging.WARNING)
 
     # Main program logic start.
     try:
@@ -135,16 +125,20 @@ def main() -> int:
             # There is technically a race condition here as we are reopening the
             # file, but doing it otherwise is annoying, and it is unlikely that
             # another tool is manipulating the files at the same time.
-            logging.info("Striping %s", args.file)
+            if args.verbose:
+                print(f"Striping {args.file}", file=sys.stderr)
             with open(args.file, "wb") as fp:
                 fp.write(decode_container(bitstream))
         else:
-            logging.info("Skipping %s as it is already stripped.", args.file)
+            if args.verbose:
+                print(
+                    f"Skipping {args.file} as it is already stripped", file=sys.stderr
+                )
     except FileNotFoundError:
-        logging.error("%s not found.", args.file)
+        print(f"{args.file} not found", sys.stderr)
         return 1
     except ValueError:
-        logging.error("%s is not a valid JXL file.")
+        print(f"{args.file} is not a valid JXL file", sys.stderr)
         return 1
 
     return 0
